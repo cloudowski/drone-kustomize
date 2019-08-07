@@ -1,6 +1,8 @@
 #!/bin/sh
 
 set -euo pipefail
+PLUGIN_DEBUG=true
+[ -n "${PLUGIN_DEBUG:-}" ] && set -x
 
 if [ -n "$PLUGIN_KUBECONFIG" ];then
     [ -d $HOME/.kube ] || mkdir $HOME/.kube 
@@ -9,7 +11,7 @@ if [ -n "$PLUGIN_KUBECONFIG" ];then
     unset PLUGIN_KUBECONFIG
 fi
 
-kubectl config view
+#kubectl config view
 
 if [ -n "${PLUGIN_TEMPLATE_PATH:-}" ]; then
     cd $PLUGIN_TEMPLATE_PATH
@@ -36,6 +38,6 @@ elif [ -n "${PLUGIN_DIR:-}" ];then
     cd $PLUGIN_DIR
 fi
 
-#kustomize build
+[ -n "${PLUGIN_DEBUG:-}" ] && kustomize build
 kustomize build | kubectl apply -f-
 
